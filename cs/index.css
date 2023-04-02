@@ -1,0 +1,77 @@
+.site {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	padding: 0;
+	margin: 0;
+	overflow: visible;
+}
+.container {
+  width: 1000px;
+  height: 600px;
+  overflow: hidden;
+  outline: 1px solid gray;
+  float: left;
+  z-index: 0;
+}
+
+.imageBox {
+	width: 1000px;
+	height: 600px;
+	overflow: hidden;
+	position: absolute;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  transition: transform 0s;
+  transform-origin: 0 0;
+  position: relative;
+  z-index: 1;
+}
+
+
+.dot {
+	width: 100%;
+	height: 100%;
+	transition: transform 0s;
+	transform-origin: 0 0;
+	position: relative;
+	z-index: 100;
+}
+
+img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+}
+
+.selection {
+	padding-left: 20px;
+	float: left;
+	z-index: 1;
+}
+
+.mapDropdown {
+	position: relative;
+	overflow: visible !important;
+	float: up;
+}
+
+.itemDropdown {
+	position: relative;
+	overflow: visible !important;
+	float: up;
+	padding-top: 20px;
+}
+
+.readyButton {
+	position: relative;
+	padding-top: 20px;
+	float: up;
+}
+
+form {
+	overflow: visible;
+}
