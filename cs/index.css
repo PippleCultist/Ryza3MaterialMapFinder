@@ -39,12 +39,18 @@
 	transform-origin: 0 0;
 	position: relative;
 	z-index: 100;
+	pointer-events: none;
+	user-select: none;
 }
 
 img {
   width: auto;
   height: auto;
   max-width: 100%;
+}
+
+select {
+	float: right;
 }
 
 .selection {
