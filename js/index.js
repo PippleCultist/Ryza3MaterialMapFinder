@@ -182,6 +182,7 @@ function setup()
 	imageScaleFactor = img.width / img.naturalWidth;
 	iconScaleFactor = imageScaleFactor / 4;
 	minScale = Math.max(1, (img.naturalWidth / container.clientWidth) / (img.naturalHeight / container.clientHeight));
+	maxScale = 8 * minScale;
 	scale = minScale;
 	pos = { x: 0, y: 0 };
 	target = { x: 0, y: 0 };
