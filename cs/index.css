@@ -4,11 +4,11 @@
 	position: fixed;
 	padding: 0;
 	margin: 0;
-	overflow: visible;
+	overflow: auto;
 }
 .container {
-  width: 1000px;
-  height: 600px;
+  width: 70vw;
+  height: 80vh;
   overflow: hidden;
   outline: 1px solid gray;
   float: left;
@@ -16,8 +16,8 @@
 }
 
 .imageBox {
-	width: 1000px;
-	height: 600px;
+	width: 70vw;
+	height: 80vh;
 	overflow: hidden;
 	position: absolute;
 }

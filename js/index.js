@@ -41,8 +41,11 @@ let pointer = { x: 0, y: 0 };
 let overflow = { x: 0, y: 0 };
 let scale = 1;
 let prevPointerPosition = { x: 0, y: 0 };
+let prevPointerDist = 1;
 let iconScaleFactor = 1;
 let imageScaleFactor = 1;
+let minScale = 1;
+let maxScale = 8;
 
 let imgArr = [];
 let imgPos = [];
@@ -158,8 +161,6 @@ function queryItems()
 }
 
 img.onload = function() {
-	imageScaleFactor = img.width / img.naturalWidth;
-	iconScaleFactor = imageScaleFactor / 4;
 	var numberFound = queryItems();
 	numberFoundLabel.innerHTML = "Number found: " + numberFound;
 	setup();
@@ -171,7 +172,6 @@ if (img.complete)
 
 button.onclick = function() {
 	isSetup = false;
-	scale = 1;
 	var selectMenu = document.getElementById("maps");
 	var selectedMap = selectMenu.options[selectMenu.selectedIndex].text;
 	img.src = "img/" + selectedMap + ".jpg";
@@ -179,6 +179,10 @@ button.onclick = function() {
 
 function setup()
 {
+	imageScaleFactor = img.width / img.naturalWidth;
+	iconScaleFactor = imageScaleFactor / 4;
+	minScale = Math.max(1, (img.naturalWidth / container.clientWidth) / (img.naturalHeight / container.clientHeight));
+	scale = minScale;
 	pos = { x: 0, y: 0 };
 	target = { x: 0, y: 0 };
 	pointer = { x: 0, y: 0 };
@@ -193,6 +197,109 @@ function setup()
 	}
 	isSetup = true;
 }
+
+window.addEventListener('resize', event => {
+	setup();
+})
+
+function recalculateAveragePos()
+{
+	var averagePos = { x: 0, y: 0 };
+	for (let i = 0; i < event.touches.length; i++)
+	{
+		averagePos.x += event.touches[i].clientX;
+		averagePos.y += event.touches[i].clientY;
+	}
+	averagePos.x /= event.touches.length;
+	averagePos.y /= event.touches.length;
+	prevPointerPosition.x = averagePos.x;
+	prevPointerPosition.y = averagePos.y;
+}
+
+img.addEventListener('touchstart', event => {
+	event.preventDefault();
+	if (event.touches.length == 2)
+	{
+		prevPointerDist = Math.hypot(event.touches[0].clientX - event.touches[1].clientX, event.touches[0].clientY - event.touches[1].clientY);
+	}
+	isDragging = true;
+	recalculateAveragePos();
+})
+
+img.addEventListener('touchend', event => {
+	event.preventDefault();
+	if (event.touches.length == 0)
+	{
+		isDragging = false;
+	}
+	recalculateAveragePos();
+})
+
+img.addEventListener('touchcancel', event => {
+	event.preventDefault();
+	if (event.touches.length == 0)
+	{
+		isDragging = false;
+	}
+	recalculateAveragePos();
+})
+
+img.addEventListener('touchmove', event => {
+	event.preventDefault();
+	if (isDragging)
+	{
+		var averagePos = { x: 0, y: 0 };
+		for (let i = 0; i < event.touches.length; i++)
+		{
+			averagePos.x += event.touches[i].clientX;
+			averagePos.y += event.touches[i].clientY;
+		}
+		averagePos.x /= event.touches.length;
+		averagePos.y /= event.touches.length;
+		if (event.touches.length == 2)
+		{
+			var curDist = Math.hypot(event.touches[0].clientX - event.touches[1].clientX, event.touches[0].clientY - event.touches[1].clientY);
+			pointer.x = averagePos.x - container.offsetLeft;
+			pointer.y = averagePos.y - container.offsetTop;
+			target.x = (pointer.x - pos.x) / scale;
+			target.y = (pointer.y - pos.y) / scale;
+			
+			scale *= (curDist - prevPointerDist) * speed * .05 + 1;
+			
+			scale = Math.max(minScale, Math.min(maxScale, scale));
+
+			pos.x = -target.x * scale + pointer.x;
+			pos.y = -target.y * scale + pointer.y;
+			prevPointerDist = curDist;
+		}
+		pos.x += averagePos.x - prevPointerPosition.x;
+		pos.y += averagePos.y - prevPointerPosition.y;
+		if (pos.x > 0)
+		{
+			pos.x = 0;
+		}
+		if (pos.y > 0)
+		{
+			pos.y = 0;
+		}
+		if (size.w - pos.x > (size.w + overflow.x) * scale)
+		{
+			pos.x = size.w - (size.w + overflow.x) * scale;
+		}
+		if (size.h - pos.y > (size.h + overflow.y) * scale)
+		{
+			pos.y = size.h - (size.h + overflow.y) * scale;
+		}
+		image.style.transform = `translate(${pos.x}px,${pos.y}px) scale(${scale},${scale})`;
+		for (var i = 0; i < imgArr.length; i++)
+		{
+			imgArr[i].style.transform = `translate(${imgPos[i].x * imageScaleFactor * scale + pos.x}px,${imgPos[i].y * imageScaleFactor * scale + pos.y}px) scale(${scale * iconScaleFactor},${scale * iconScaleFactor})`;
+		}
+		prevPointerPosition.x = averagePos.x;
+		prevPointerPosition.y = averagePos.y;
+	}
+})
+
 img.addEventListener('wheel', event => {
 	if (!isSetup)
 	{
@@ -207,9 +314,7 @@ img.addEventListener('wheel', event => {
 	
 	scale *= -Math.sign(event.deltaY) * speed + 1;
 	
-	const max_scale = 8;
-	const min_scale = 1;
-	scale = Math.max(min_scale, Math.min(max_scale, scale));
+	scale = Math.max(minScale, Math.min(maxScale, scale));
 
 	pos.x = -target.x * scale + pointer.x;
 	pos.y = -target.y * scale + pointer.y;
