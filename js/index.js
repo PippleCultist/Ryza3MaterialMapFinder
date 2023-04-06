@@ -28,6 +28,18 @@ for (let i = 0; i < itemLookupTable.length; i++)
 }
 areaStartIndex[currentIndex] = itemLookupTable.length;
 
+let areaStartIndexMonster = [0, -1, -1, -1, -1, -1, -1];
+currentIndex = 1;
+for (let i = 0; i < monsterDropLookupTable.length; i++)
+{
+	if (monsterDropLookupTable[i][0].localeCompare(areaNames[currentIndex]) == 0)
+	{
+		areaStartIndexMonster[currentIndex] = i;
+		currentIndex++;
+	}
+}
+areaStartIndexMonster[currentIndex] = monsterDropLookupTable.length;
+
 let isDragging = false;
 let isSetup = false;
 let isOverImage = false;
@@ -149,6 +161,69 @@ function queryItems()
 			addDot.className = "dot";
 			var addImage = document.createElement("img");
 			addImage.src = "img/GatheringHand.png";
+			addDot.append(addImage);
+			addImageBox.append(addDot);
+			itemMarker.append(addImageBox);
+			imgArr.push(addDot);
+			imgPos.push({ x: pixelX, y: pixelY });
+			numberFound++;
+		}
+	}
+
+	for (let i = areaStartIndexMonster[selectedMapIndex]; i < areaStartIndexMonster[selectedMapIndex + 1]; i++)
+	{
+		var flag = false;
+		for (let j = 0; !flag && j < 4; j++)
+		{
+			if (!monsterDropLookupTable[i][j + 5]) continue;
+			if (monsterDropLookupTable[i][j + 5].toLowerCase().localeCompare(term) == 0)
+			{
+				flag = true;
+				break;
+			}
+		}
+		if (flag)
+		{
+			let pixelXShift = 0;
+			let pixelYShift = 0;
+			switch (selectedMapIndex)
+			{
+				case mapNames.KURKEN:
+					pixelXShift = -20;
+					pixelYShift = -20;
+					break;
+				case mapNames.MAINLAND:
+					pixelXShift = -20;
+					pixelYShift = -1560;
+					break;
+				case mapNames.CLERIA:
+					pixelXShift = -20;
+					pixelYShift = -20;
+					break;
+				case mapNames.NEMED:
+					pixelXShift = -1460;
+					pixelYShift = -20;
+					break;
+				case mapNames.ORIM:
+					pixelXShift = -180;
+					pixelYShift = -500;
+					break;
+				case mapNames.CODE:
+					pixelXShift = -20;
+					pixelYShift = 500;
+					break;
+			}
+			let pixelXScale = 1.6;
+			let pixelYScale = 1.6;
+			let pixelX = parseInt(monsterDropLookupTable[i][1]) * pixelXScale + pixelXShift;
+			let pixelY = parseInt(monsterDropLookupTable[i][3]) * pixelYScale + pixelYShift;
+			var addImageBox = document.createElement("div");
+			addImageBox.className = "imageBox";
+			var addDot = document.createElement("div")
+			addDot.className = "dot";
+			var addImage = document.createElement("img");
+			var monsterType = monsterDropLookupTable[i][4];
+			addImage.src = "img/Monster/Monster" + monsterType + ".png";
 			addDot.append(addImage);
 			addImageBox.append(addDot);
 			itemMarker.append(addImageBox);
