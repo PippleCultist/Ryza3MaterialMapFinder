@@ -296,7 +296,22 @@
 			$( "#items" ).autocomplete({
 				source: function(request, response) {
 					var results = $.ui.autocomplete.filter(availableItems, request.term);
-					response(results.filter(word => word.toLowerCase().startsWith(request.term.toLowerCase())).slice(0, 20));
+					results.sort(
+						function(a, b) {
+							function calculateScore(name)
+							{
+								var index = name.toLowerCase().indexOf(request.term.toLowerCase());
+								var score = index;
+								// prioritize words at the start of boundaries as that is more likely to be what people are searching for
+								if (index == 0 || name.charAt(index - 1) == ' ')
+								{
+									score -= 100;
+								}
+								return score;
+							}
+							return calculateScore(a) - calculateScore(b);
+						});
+					response(results.slice(0, 20));
 				}
 			});
 		})

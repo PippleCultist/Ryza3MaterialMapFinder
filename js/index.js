@@ -104,6 +104,56 @@ function queryItems()
 	var gatheringToolMaxRank = [parseInt($("#handRankDropdown").val()), parseInt($("#rodRankDropdown").val()), parseInt($("#sickleRankDropdown").val()),
 								parseInt($("#axeRankDropdown").val()), parseInt($("#hammerRankDropdown").val()), parseInt($("#netRankDropdown").val())];
 	let numberFound = 0;
+	
+	function addImageToMap(imagePath, coordX, coordY)
+	{
+		let pixelXShift = 0;
+		let pixelYShift = 0;
+		switch (selectedMapIndex)
+		{
+			case mapNames.KURKEN:
+				pixelXShift = -20;
+				pixelYShift = -20;
+				break;
+			case mapNames.MAINLAND:
+				pixelXShift = -20;
+				pixelYShift = -1560;
+				break;
+			case mapNames.CLERIA:
+				pixelXShift = -20;
+				pixelYShift = -20;
+				break;
+			case mapNames.NEMED:
+				pixelXShift = -1460;
+				pixelYShift = -20;
+				break;
+			case mapNames.ORIM:
+				pixelXShift = -180;
+				pixelYShift = -500;
+				break;
+			case mapNames.CODE:
+				pixelXShift = -20;
+				pixelYShift = 500;
+				break;
+		}
+		let pixelXScale = 1.6;
+		let pixelYScale = 1.6;
+		let pixelX = coordX * pixelXScale + pixelXShift;
+		let pixelY = coordY * pixelYScale + pixelYShift;
+		var addImageBox = document.createElement("div");
+		addImageBox.className = "imageBox";
+		var addDot = document.createElement("div")
+		addDot.className = "dot";
+		var addImage = document.createElement("img");
+		addImage.src = imagePath;
+		addDot.append(addImage);
+		addImageBox.append(addDot);
+		itemMarker.append(addImageBox);
+		imgArr.push(addDot);
+		imgPos.push({ x: pixelX, y: pixelY });
+		numberFound++;
+	}
+
 	for (let i = areaStartIndex[selectedMapIndex]; i < areaStartIndex[selectedMapIndex + 1]; i++)
 	{
 		var flag = false;
@@ -122,51 +172,7 @@ function queryItems()
 		}
 		if (flag)
 		{
-			let pixelXShift = 0;
-			let pixelYShift = 0;
-			switch (selectedMapIndex)
-			{
-				case mapNames.KURKEN:
-					pixelXShift = -20;
-					pixelYShift = -20;
-					break;
-				case mapNames.MAINLAND:
-					pixelXShift = -20;
-					pixelYShift = -1560;
-					break;
-				case mapNames.CLERIA:
-					pixelXShift = -20;
-					pixelYShift = -20;
-					break;
-				case mapNames.NEMED:
-					pixelXShift = -1460;
-					pixelYShift = -20;
-					break;
-				case mapNames.ORIM:
-					pixelXShift = -180;
-					pixelYShift = -500;
-					break;
-				case mapNames.CODE:
-					pixelXShift = -20;
-					pixelYShift = 500;
-					break;
-			}
-			let pixelXScale = 1.6;
-			let pixelYScale = 1.6;
-			let pixelX = parseInt(itemLookupTable[i][1]) * pixelXScale + pixelXShift;
-			let pixelY = parseInt(itemLookupTable[i][3]) * pixelYScale + pixelYShift;
-			var addImageBox = document.createElement("div");
-			addImageBox.className = "imageBox";
-			var addDot = document.createElement("div")
-			addDot.className = "dot";
-			var addImage = document.createElement("img");
-			addImage.src = "img/GatheringHand.png";
-			addDot.append(addImage);
-			addImageBox.append(addDot);
-			itemMarker.append(addImageBox);
-			imgArr.push(addDot);
-			imgPos.push({ x: pixelX, y: pixelY });
-			numberFound++;
+			addImageToMap("img/GatheringHand.png", parseInt(itemLookupTable[i][1]), parseInt(itemLookupTable[i][3]));
 		}
 	}
 
@@ -184,52 +190,7 @@ function queryItems()
 		}
 		if (flag)
 		{
-			let pixelXShift = 0;
-			let pixelYShift = 0;
-			switch (selectedMapIndex)
-			{
-				case mapNames.KURKEN:
-					pixelXShift = -20;
-					pixelYShift = -20;
-					break;
-				case mapNames.MAINLAND:
-					pixelXShift = -20;
-					pixelYShift = -1560;
-					break;
-				case mapNames.CLERIA:
-					pixelXShift = -20;
-					pixelYShift = -20;
-					break;
-				case mapNames.NEMED:
-					pixelXShift = -1460;
-					pixelYShift = -20;
-					break;
-				case mapNames.ORIM:
-					pixelXShift = -180;
-					pixelYShift = -500;
-					break;
-				case mapNames.CODE:
-					pixelXShift = -20;
-					pixelYShift = 500;
-					break;
-			}
-			let pixelXScale = 1.6;
-			let pixelYScale = 1.6;
-			let pixelX = parseInt(monsterDropLookupTable[i][1]) * pixelXScale + pixelXShift;
-			let pixelY = parseInt(monsterDropLookupTable[i][3]) * pixelYScale + pixelYShift;
-			var addImageBox = document.createElement("div");
-			addImageBox.className = "imageBox";
-			var addDot = document.createElement("div")
-			addDot.className = "dot";
-			var addImage = document.createElement("img");
-			var monsterType = monsterDropLookupTable[i][4];
-			addImage.src = "img/Monster/Monster" + monsterType + ".png";
-			addDot.append(addImage);
-			addImageBox.append(addDot);
-			itemMarker.append(addImageBox);
-			imgArr.push(addDot);
-			imgPos.push({ x: pixelX, y: pixelY });
-			numberFound++;
+			addImageToMap("img/Monster/Monster" + monsterDropLookupTable[i][4] + ".png", parseInt(monsterDropLookupTable[i][1]), parseInt(monsterDropLookupTable[i][3]));
 		}
 	}
 	return numberFound;
