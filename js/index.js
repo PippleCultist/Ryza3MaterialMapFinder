@@ -62,6 +62,226 @@ let maxScale = 8;
 let imgArr = [];
 let imgPos = [];
 
+function recalculateAveragePos()
+{
+	var averagePos = { x: 0, y: 0 };
+	for (let i = 0; i < event.touches.length; i++)
+	{
+		averagePos.x += event.touches[i].clientX;
+		averagePos.y += event.touches[i].clientY;
+	}
+	averagePos.x /= event.touches.length;
+	averagePos.y /= event.touches.length;
+	prevPointerPosition.x = averagePos.x;
+	prevPointerPosition.y = averagePos.y;
+}
+
+function handleTouchStart(event)
+{
+	event.preventDefault();
+	if (event.touches.length == 2)
+	{
+		prevPointerDist = Math.hypot(event.touches[0].clientX - event.touches[1].clientX, event.touches[0].clientY - event.touches[1].clientY);
+	}
+	isDragging = true;
+	recalculateAveragePos();
+}
+
+function handleTouchEnd(event)
+{
+	event.preventDefault();
+	if (event.touches.length == 0)
+	{
+		isDragging = false;
+	}
+	recalculateAveragePos();
+}
+
+function handleTouchCancel(event)
+{
+	event.preventDefault();
+	if (event.touches.length == 0)
+	{
+		isDragging = false;
+	}
+	recalculateAveragePos();
+}
+
+function handleTouchMove(event)
+{
+	event.preventDefault();
+	if (isDragging)
+	{
+		var averagePos = { x: 0, y: 0 };
+		for (let i = 0; i < event.touches.length; i++)
+		{
+			averagePos.x += event.touches[i].clientX;
+			averagePos.y += event.touches[i].clientY;
+		}
+		averagePos.x /= event.touches.length;
+		averagePos.y /= event.touches.length;
+		if (event.touches.length == 2)
+		{
+			var curDist = Math.hypot(event.touches[0].clientX - event.touches[1].clientX, event.touches[0].clientY - event.touches[1].clientY);
+			pointer.x = averagePos.x - container.offsetLeft;
+			pointer.y = averagePos.y - container.offsetTop;
+			target.x = (pointer.x - pos.x) / scale;
+			target.y = (pointer.y - pos.y) / scale;
+			
+			scale *= (curDist - prevPointerDist) * speed * .05 + 1;
+			
+			scale = Math.max(minScale, Math.min(maxScale, scale));
+
+			pos.x = -target.x * scale + pointer.x;
+			pos.y = -target.y * scale + pointer.y;
+			prevPointerDist = curDist;
+		}
+		pos.x += averagePos.x - prevPointerPosition.x;
+		pos.y += averagePos.y - prevPointerPosition.y;
+		if (pos.x > 0)
+		{
+			pos.x = 0;
+		}
+		if (pos.y > 0)
+		{
+			pos.y = 0;
+		}
+		if (size.w - pos.x > (size.w + overflow.x) * scale)
+		{
+			pos.x = size.w - (size.w + overflow.x) * scale;
+		}
+		if (size.h - pos.y > (size.h + overflow.y) * scale)
+		{
+			pos.y = size.h - (size.h + overflow.y) * scale;
+		}
+		image.style.transform = `translate(${pos.x}px,${pos.y}px) scale(${scale},${scale})`;
+		for (var i = 0; i < imgArr.length; i++)
+		{
+			imgArr[i].style.transform = `translate(${imgPos[i].x * imageScaleFactor * scale + pos.x}px,${imgPos[i].y * imageScaleFactor * scale + pos.y}px) scale(${scale * iconScaleFactor},${scale * iconScaleFactor})`;
+		}
+		prevPointerPosition.x = averagePos.x;
+		prevPointerPosition.y = averagePos.y;
+	}
+}
+
+function handleWheelScroll(event)
+{
+	if (!isSetup)
+	{
+		return;
+	}
+	event.preventDefault();
+	
+	pointer.x = event.pageX - container.offsetLeft;
+	pointer.y = event.pageY - container.offsetTop;
+	target.x = (pointer.x - pos.x) / scale;
+	target.y = (pointer.y - pos.y) / scale;
+	
+	scale *= -Math.sign(event.deltaY) * speed + 1;
+	
+	scale = Math.max(minScale, Math.min(maxScale, scale));
+
+	pos.x = -target.x * scale + pointer.x;
+	pos.y = -target.y * scale + pointer.y;
+
+	if (pos.x > 0)
+	{
+		pos.x = 0;
+	}
+	if (pos.y > 0)
+	{
+		pos.y = 0;
+	}
+	if (size.w - pos.x > (size.w + overflow.x) * scale)
+	{
+		pos.x = size.w - (size.w + overflow.x) * scale;
+	}
+	if (size.h - pos.y > (size.h + overflow.y) * scale)
+	{
+		pos.y = size.h - (size.h + overflow.y) * scale;
+	}
+	image.style.transform = `translate(${pos.x}px,${pos.y}px) scale(${scale},${scale})`;
+	for (var i = 0; i < imgArr.length; i++)
+	{
+		imgArr[i].style.transform = `translate(${imgPos[i].x * imageScaleFactor * scale + pos.x}px,${imgPos[i].y * imageScaleFactor * scale + pos.y}px) scale(${scale * iconScaleFactor},${scale * iconScaleFactor})`;
+	}
+}
+
+function handleMouseEnter(event)
+{
+	console.log(this);
+	console.log(event.target);
+	isOverImage = true;
+}
+
+function handleMouseLeave(event)
+{
+	isOverImage = false;
+	var borderSize = 1;
+	if (event.pageX < container.offsetLeft + borderSize || event.pageX > container.clientWidth + container.offsetLeft - borderSize ||
+		event.pageY < container.offsetTop + borderSize || event.pageY > container.clientHeight + container.offsetTop - borderSize)
+	{
+		isDragging = false;
+	}
+}
+
+function handleMouseDown(event)
+{
+	if (!isSetup || !isOverImage)
+	{
+		return;
+	}
+	event.preventDefault();
+	isDragging = true;
+	prevPointerPosition.x = event.pageX;
+	prevPointerPosition.y = event.pageY;
+}
+
+function handleMouseUp(event)
+{
+	if (!isSetup)
+	{
+		return;
+	}
+	isDragging = false;
+}
+
+function handleMouseMove(event)
+{
+	if (!isSetup || !isOverImage)
+	{
+		return;
+	}
+	if (isDragging)
+	{
+		pos.x += event.pageX - prevPointerPosition.x;
+		pos.y += event.pageY - prevPointerPosition.y;
+		if (pos.x > 0)
+		{
+			pos.x = 0;
+		}
+		if (pos.y > 0)
+		{
+			pos.y = 0;
+		}
+		if (size.w - pos.x > (size.w + overflow.x) * scale)
+		{
+			pos.x = size.w - (size.w + overflow.x) * scale;
+		}
+		if (size.h - pos.y > (size.h + overflow.y) * scale)
+		{
+			pos.y = size.h - (size.h + overflow.y) * scale;
+		}
+		image.style.transform = `translate(${pos.x}px,${pos.y}px) scale(${scale},${scale})`;
+		for (var i = 0; i < imgArr.length; i++)
+		{
+			imgArr[i].style.transform = `translate(${imgPos[i].x * imageScaleFactor * scale + pos.x}px,${imgPos[i].y * imageScaleFactor * scale + pos.y}px) scale(${scale * iconScaleFactor},${scale * iconScaleFactor})`;
+		}
+	}
+	prevPointerPosition.x = event.pageX;
+	prevPointerPosition.y = event.pageY;
+}
+
 function queryItems()
 {
 	var curDot = itemMarker.lastElementChild;
@@ -149,6 +369,27 @@ function queryItems()
 		addDot.append(addImage);
 		addImageBox.append(addDot);
 		itemMarker.append(addImageBox);
+
+		addImage.addEventListener('touchstart', handleTouchStart, { passive: false });
+
+		addImage.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+		addImage.addEventListener('touchcancel', handleTouchCancel, { passive: false });
+
+		addImage.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+		addImage.addEventListener('wheel', handleWheelScroll, { passive: false });
+
+		addImage.addEventListener('mouseenter', handleMouseEnter, { passive: false });
+
+		addImage.addEventListener('mouseleave', handleMouseLeave, { passive: false });
+
+		addImage.addEventListener('mousedown', handleMouseDown, { passive: false });
+
+		addImage.addEventListener('mouseup', handleMouseUp, { passive: false });
+
+		addImage.addEventListener('mousemove', handleMouseMove, { passive: false });
+
 		imgArr.push(addDot);
 		imgPos.push({ x: pixelX, y: pixelY });
 		numberFound++;
@@ -253,206 +494,22 @@ window.addEventListener('resize', event => {
 	setup();
 })
 
-function recalculateAveragePos()
-{
-	var averagePos = { x: 0, y: 0 };
-	for (let i = 0; i < event.touches.length; i++)
-	{
-		averagePos.x += event.touches[i].clientX;
-		averagePos.y += event.touches[i].clientY;
-	}
-	averagePos.x /= event.touches.length;
-	averagePos.y /= event.touches.length;
-	prevPointerPosition.x = averagePos.x;
-	prevPointerPosition.y = averagePos.y;
-}
+img.addEventListener('touchstart', handleTouchStart, { passive: false });
 
-img.addEventListener('touchstart', event => {
-	event.preventDefault();
-	if (event.touches.length == 2)
-	{
-		prevPointerDist = Math.hypot(event.touches[0].clientX - event.touches[1].clientX, event.touches[0].clientY - event.touches[1].clientY);
-	}
-	isDragging = true;
-	recalculateAveragePos();
-})
+img.addEventListener('touchend', handleTouchEnd, { passive: false });
 
-img.addEventListener('touchend', event => {
-	event.preventDefault();
-	if (event.touches.length == 0)
-	{
-		isDragging = false;
-	}
-	recalculateAveragePos();
-})
+img.addEventListener('touchcancel', handleTouchCancel, { passive: false });
 
-img.addEventListener('touchcancel', event => {
-	event.preventDefault();
-	if (event.touches.length == 0)
-	{
-		isDragging = false;
-	}
-	recalculateAveragePos();
-})
+img.addEventListener('touchmove', handleTouchMove, { passive: false });
 
-img.addEventListener('touchmove', event => {
-	event.preventDefault();
-	if (isDragging)
-	{
-		var averagePos = { x: 0, y: 0 };
-		for (let i = 0; i < event.touches.length; i++)
-		{
-			averagePos.x += event.touches[i].clientX;
-			averagePos.y += event.touches[i].clientY;
-		}
-		averagePos.x /= event.touches.length;
-		averagePos.y /= event.touches.length;
-		if (event.touches.length == 2)
-		{
-			var curDist = Math.hypot(event.touches[0].clientX - event.touches[1].clientX, event.touches[0].clientY - event.touches[1].clientY);
-			pointer.x = averagePos.x - container.offsetLeft;
-			pointer.y = averagePos.y - container.offsetTop;
-			target.x = (pointer.x - pos.x) / scale;
-			target.y = (pointer.y - pos.y) / scale;
-			
-			scale *= (curDist - prevPointerDist) * speed * .05 + 1;
-			
-			scale = Math.max(minScale, Math.min(maxScale, scale));
+img.addEventListener('wheel', handleWheelScroll, { passive: false });
 
-			pos.x = -target.x * scale + pointer.x;
-			pos.y = -target.y * scale + pointer.y;
-			prevPointerDist = curDist;
-		}
-		pos.x += averagePos.x - prevPointerPosition.x;
-		pos.y += averagePos.y - prevPointerPosition.y;
-		if (pos.x > 0)
-		{
-			pos.x = 0;
-		}
-		if (pos.y > 0)
-		{
-			pos.y = 0;
-		}
-		if (size.w - pos.x > (size.w + overflow.x) * scale)
-		{
-			pos.x = size.w - (size.w + overflow.x) * scale;
-		}
-		if (size.h - pos.y > (size.h + overflow.y) * scale)
-		{
-			pos.y = size.h - (size.h + overflow.y) * scale;
-		}
-		image.style.transform = `translate(${pos.x}px,${pos.y}px) scale(${scale},${scale})`;
-		for (var i = 0; i < imgArr.length; i++)
-		{
-			imgArr[i].style.transform = `translate(${imgPos[i].x * imageScaleFactor * scale + pos.x}px,${imgPos[i].y * imageScaleFactor * scale + pos.y}px) scale(${scale * iconScaleFactor},${scale * iconScaleFactor})`;
-		}
-		prevPointerPosition.x = averagePos.x;
-		prevPointerPosition.y = averagePos.y;
-	}
-})
+img.addEventListener('mouseenter', handleMouseEnter, { passive: false });
 
-img.addEventListener('wheel', event => {
-	if (!isSetup)
-	{
-		return;
-	}
-	event.preventDefault();
-	
-	pointer.x = event.pageX - container.offsetLeft;
-	pointer.y = event.pageY - container.offsetTop;
-	target.x = (pointer.x - pos.x) / scale;
-	target.y = (pointer.y - pos.y) / scale;
-	
-	scale *= -Math.sign(event.deltaY) * speed + 1;
-	
-	scale = Math.max(minScale, Math.min(maxScale, scale));
+img.addEventListener('mouseleave', handleMouseLeave, { passive: false });
 
-	pos.x = -target.x * scale + pointer.x;
-	pos.y = -target.y * scale + pointer.y;
+img.addEventListener('mousedown', handleMouseDown, { passive: false });
 
-	if (pos.x > 0)
-	{
-		pos.x = 0;
-	}
-	if (pos.y > 0)
-	{
-		pos.y = 0;
-	}
-	if (size.w - pos.x > (size.w + overflow.x) * scale)
-	{
-		pos.x = size.w - (size.w + overflow.x) * scale;
-	}
-	if (size.h - pos.y > (size.h + overflow.y) * scale)
-	{
-		pos.y = size.h - (size.h + overflow.y) * scale;
-	}
-	image.style.transform = `translate(${pos.x}px,${pos.y}px) scale(${scale},${scale})`;
-	for (var i = 0; i < imgArr.length; i++)
-	{
-		imgArr[i].style.transform = `translate(${imgPos[i].x * imageScaleFactor * scale + pos.x}px,${imgPos[i].y * imageScaleFactor * scale + pos.y}px) scale(${scale * iconScaleFactor},${scale * iconScaleFactor})`;
-	}
-}, { passive: false });
+img.addEventListener('mouseup', handleMouseUp, { passive: false });
 
-img.addEventListener('mouseenter', event => {
-	isOverImage = true;
-}, false)
-
-img.addEventListener('mouseleave', event => {
-	isOverImage = false;
-	isDragging = false;
-}, false)
-
-
-img.addEventListener('mousedown', event => {
-	if (!isSetup || !isOverImage)
-	{
-		return;
-	}
-	event.preventDefault();
-	isDragging = true;
-	prevPointerPosition.x = event.pageX;
-	prevPointerPosition.y = event.pageY;
-}, { passive: false })
-
-img.addEventListener('mouseup', event => {
-	if (!isSetup)
-	{
-		return;
-	}
-	isDragging = false;
-}, false)
-
-img.addEventListener('mousemove', event => {
-	if (!isSetup || !isOverImage)
-	{
-		return;
-	}
-	if (isDragging)
-	{
-		pos.x += event.pageX - prevPointerPosition.x;
-		pos.y += event.pageY - prevPointerPosition.y;
-		if (pos.x > 0)
-		{
-			pos.x = 0;
-		}
-		if (pos.y > 0)
-		{
-			pos.y = 0;
-		}
-		if (size.w - pos.x > (size.w + overflow.x) * scale)
-		{
-			pos.x = size.w - (size.w + overflow.x) * scale;
-		}
-		if (size.h - pos.y > (size.h + overflow.y) * scale)
-		{
-			pos.y = size.h - (size.h + overflow.y) * scale;
-		}
-		image.style.transform = `translate(${pos.x}px,${pos.y}px) scale(${scale},${scale})`;
-		for (var i = 0; i < imgArr.length; i++)
-		{
-			imgArr[i].style.transform = `translate(${imgPos[i].x * imageScaleFactor * scale + pos.x}px,${imgPos[i].y * imageScaleFactor * scale + pos.y}px) scale(${scale * iconScaleFactor},${scale * iconScaleFactor})`;
-		}
-	}
-	prevPointerPosition.x = event.pageX;
-	prevPointerPosition.y = event.pageY;
-}, false)
+img.addEventListener('mousemove', handleMouseMove, { passive: false });
