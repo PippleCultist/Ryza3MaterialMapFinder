@@ -161,12 +161,26 @@ function queryItems()
 		{
 			for (let k = 0; k < 3; k++)
 			{
-				if (!itemLookupTable[i][j * 6 + k * 2 + 4]) continue;
 				if (gatheringToolMaxRank[j] <= k) break;
-				if (itemLookupTable[i][j * 6 + k * 2 + 4].toLowerCase().localeCompare(term) == 0)
+				// Base game lookup
+				if (itemLookupTable[i][j * 6 + k * 2 + 5])
 				{
-					flag = true;
-					break;
+					if (itemLookupTable[i][j * 6 + k * 2 + 5].toLowerCase().localeCompare(term) == 0)
+					{
+						flag = true;
+						break;
+					}
+				}
+				// DLC lookup
+				if (parseInt(itemLookupTable[i][4]) != 0 && itemLookupTable[i][j * 6 + k * 2 + 5 + 36])
+				{
+					if (parseInt(itemLookupTable[i][4]) == 1 && !$("#ArtOfAdventureCheckbox")[0].checked) continue;
+					if (parseInt(itemLookupTable[i][4]) == 2 && !$("#AlchemyMysteriesCheckbox")[0].checked) continue;
+					if (itemLookupTable[i][j * 6 + k * 2 + 5 + 36].toLowerCase().localeCompare(term) == 0)
+					{
+						flag = true;
+						break;
+					}
 				}
 			}
 		}
