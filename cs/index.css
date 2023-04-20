@@ -37,9 +37,23 @@
 	transition: transform 0s;
 	transform-origin: 0 0;
 	position: relative;
-	z-index: 100;
-	/*pointer-events: none;*/
+	z-index: 2;
 	user-select: none;
+}
+
+.tooltiptext {
+	background-color: black;
+	color: #fff;
+	text-align: center;
+	padding: 5px 0;
+	border-radius: 6px;
+
+	white-space: nowrap;
+	position: absolute;
+	bottom: 100%;
+	left: 50%;
+	user-select: none;
+	pointer-events: none;
 }
 
 img {

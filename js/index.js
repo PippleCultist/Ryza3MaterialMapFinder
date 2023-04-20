@@ -61,6 +61,7 @@ let maxScale = 8;
 
 let imgArr = [];
 let imgPos = [];
+let tooltipData = [];
 
 function recalculateAveragePos()
 {
@@ -85,6 +86,29 @@ function handleTouchStart(event)
 	}
 	isDragging = true;
 	recalculateAveragePos();
+}
+
+function handleTouchStartItem(event)
+{
+	var parentElement = event.target.parentElement;
+	if (parentElement.style.zIndex.localeCompare("3") == 0)
+	{
+		parentElement.style.zIndex = "2";
+		parentElement.removeChild(parentElement.lastElementChild);
+	}
+	else
+	{
+		parentElement.style.zIndex = "3";
+		var addTooltipBox = document.createElement("span");
+		addTooltipBox.className = "tooltiptext";
+		let dotIdNum = parseInt(parentElement.id.substring(3));
+		addTooltipBox.innerHTML += tooltipData[dotIdNum];
+		addTooltipBox.style.width = `fit-content`
+		addTooltipBox.style.fontSize = `10vw`;
+		parentElement.append(addTooltipBox);
+		addTooltipBox.style.marginLeft = `-${addTooltipBox.offsetWidth / 2}px`
+	}
+	handleTouchStart(event);
 }
 
 function handleTouchEnd(event)
@@ -209,8 +233,6 @@ function handleWheelScroll(event)
 
 function handleMouseEnter(event)
 {
-	console.log(this);
-	console.log(event.target);
 	isOverImage = true;
 }
 
@@ -223,6 +245,30 @@ function handleMouseLeave(event)
 	{
 		isDragging = false;
 	}
+}
+
+function handleMouseEnterItem(event)
+{
+	var parentElement = event.target.parentElement;
+	parentElement.style.zIndex = "3";
+
+	var addTooltipBox = document.createElement("span");
+	addTooltipBox.className = "tooltiptext";
+	let dotIdNum = parseInt(parentElement.id.substring(3));
+	addTooltipBox.innerHTML += tooltipData[dotIdNum];
+	addTooltipBox.style.width = `fit-content`
+	addTooltipBox.style.fontSize = `10vw`;
+	parentElement.append(addTooltipBox);
+	addTooltipBox.style.marginLeft = `-${addTooltipBox.offsetWidth / 2}px`
+	handleMouseEnter(event);
+}
+
+function handleMouseLeaveItem(event)
+{
+	var parentElement = event.target.parentElement;
+	parentElement.style.zIndex = "2";
+	parentElement.removeChild(parentElement.lastElementChild);
+	handleMouseLeave(event);
 }
 
 function handleMouseDown(event)
@@ -292,6 +338,7 @@ function queryItems()
 	}
 	imgArr = [];
 	imgPos = [];
+	tooltipData = [];
 	var term = $("#items").val().toLowerCase();
 	if (!term)
 	{
@@ -323,6 +370,7 @@ function queryItems()
 	}
 	var gatheringToolMaxRank = [parseInt($("#handRankDropdown").val()), parseInt($("#rodRankDropdown").val()), parseInt($("#sickleRankDropdown").val()),
 								parseInt($("#axeRankDropdown").val()), parseInt($("#hammerRankDropdown").val()), parseInt($("#netRankDropdown").val())];
+	var gatheringToolNames = ["Hand Gathering", "Rod Gathering", "Sickle Gathering", "Axe Gathering", "Hammer Gathering", "Net Gathering"];
 	let numberFound = 0;
 	
 	function addImageToMap(imagePath, coordX, coordY)
@@ -364,13 +412,14 @@ function queryItems()
 		addImageBox.className = "imageBox";
 		var addDot = document.createElement("div")
 		addDot.className = "dot";
+		addDot.id = "dot" + imgArr.length;
 		var addImage = document.createElement("img");
 		addImage.src = imagePath;
 		addDot.append(addImage);
 		addImageBox.append(addDot);
 		itemMarker.append(addImageBox);
 
-		addImage.addEventListener('touchstart', handleTouchStart, { passive: false });
+		addImage.addEventListener('touchstart', handleTouchStartItem, { passive: false });
 
 		addImage.addEventListener('touchend', handleTouchEnd, { passive: false });
 
@@ -380,9 +429,9 @@ function queryItems()
 
 		addImage.addEventListener('wheel', handleWheelScroll, { passive: false });
 
-		addImage.addEventListener('mouseenter', handleMouseEnter, { passive: false });
+		addImage.addEventListener('mouseenter', handleMouseEnterItem, { passive: false });
 
-		addImage.addEventListener('mouseleave', handleMouseLeave, { passive: false });
+		addImage.addEventListener('mouseleave', handleMouseLeaveItem, { passive: false });
 
 		addImage.addEventListener('mousedown', handleMouseDown, { passive: false });
 
@@ -428,6 +477,40 @@ function queryItems()
 		if (flag)
 		{
 			addImageToMap("img/GatheringHand.png", parseInt(itemLookupTable[i][1]), parseInt(itemLookupTable[i][3]));
+			var itemString = "";
+			for (let j = 0; j < gatheringToolMaxRank.length; j++)
+			{
+				var curGatheringString = "";
+				// Base game items
+				for (let k = 0; k < 3; k++)
+				{
+					if (itemLookupTable[i][j * 6 + k * 2 + 5])
+					{
+						curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5] + " ";
+						curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5 + 1];
+						curGatheringString += "<br>";
+					}
+				}
+				// DLC items
+				if (parseInt(itemLookupTable[i][4]) != 0)
+				{
+					for (let k = 0; k < 3; k++)
+					{
+						if (itemLookupTable[i][j * 6 + k * 2 + 5 + 36])
+						{
+							curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5 + 36] + " ";
+							curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5 + 36 + 1] + " (DLC)";
+							curGatheringString += "<br>";
+						}
+					}
+				}
+				if (curGatheringString)
+				{
+					itemString += gatheringToolNames[j] + "<br>";
+					itemString += curGatheringString + "<br>";
+				}
+			}
+			tooltipData.push(itemString.substring(0, itemString.length - 4));
 		}
 	}
 
@@ -443,9 +526,19 @@ function queryItems()
 				break;
 			}
 		}
+		var itemString = "";
+		for (let j = 0; j < 4; j++)
+		{
+			if (monsterDropLookupTable[i][j + 5])
+			{
+				itemString += monsterDropLookupTable[i][j + 5];
+				itemString += "<br>";
+			}
+		}
 		if (flag)
 		{
 			addImageToMap("img/Monster/Monster" + monsterDropLookupTable[i][4] + ".png", parseInt(monsterDropLookupTable[i][1]), parseInt(monsterDropLookupTable[i][3]));
+			tooltipData.push(itemString.substring(0, itemString.length - 4));
 		}
 	}
 	return numberFound;
