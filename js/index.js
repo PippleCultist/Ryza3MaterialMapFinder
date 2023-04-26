@@ -371,7 +371,7 @@ function queryItems()
 	var gatheringToolMaxRank = [parseInt($("#handRankDropdown").val()), parseInt($("#rodRankDropdown").val()), parseInt($("#sickleRankDropdown").val()),
 								parseInt($("#axeRankDropdown").val()), parseInt($("#hammerRankDropdown").val()), parseInt($("#netRankDropdown").val())];
 	var gatheringToolNames = ["Hand Gathering", "Rod Gathering", "Sickle Gathering", "Axe Gathering", "Hammer Gathering", "Net Gathering"];
-	let numberFound = 0;
+	let numberFound = [0, 0, 0, 0, 0, 0];
 	
 	function addImageToMap(imagePath, coordX, coordY)
 	{
@@ -441,104 +441,114 @@ function queryItems()
 
 		imgArr.push(addDot);
 		imgPos.push({ x: pixelX, y: pixelY });
-		numberFound++;
 	}
 
-	for (let i = areaStartIndex[selectedMapIndex]; i < areaStartIndex[selectedMapIndex + 1]; i++)
+	for (let curMapIndex = 0; curMapIndex < areaNames.length; curMapIndex++)
 	{
-		var flag = false;
-		for (let j = 0; !flag && j < gatheringToolMaxRank.length; j++)
+		for (let i = areaStartIndex[curMapIndex]; i < areaStartIndex[curMapIndex + 1]; i++)
 		{
-			for (let k = 0; k < 3; k++)
+			var flag = false;
+			for (let j = 0; !flag && j < gatheringToolMaxRank.length; j++)
 			{
-				if (gatheringToolMaxRank[j] <= k) break;
-				// Base game lookup
-				if (itemLookupTable[i][j * 6 + k * 2 + 5])
-				{
-					if (itemLookupTable[i][j * 6 + k * 2 + 5].toLowerCase().localeCompare(term) == 0)
-					{
-						flag = true;
-						break;
-					}
-				}
-				// DLC lookup
-				if (parseInt(itemLookupTable[i][4]) != 0 && itemLookupTable[i][j * 6 + k * 2 + 5 + 36])
-				{
-					if (parseInt(itemLookupTable[i][4]) == 1 && !$("#ArtOfAdventureCheckbox")[0].checked) continue;
-					if (parseInt(itemLookupTable[i][4]) == 2 && !$("#AlchemyMysteriesCheckbox")[0].checked) continue;
-					if (itemLookupTable[i][j * 6 + k * 2 + 5 + 36].toLowerCase().localeCompare(term) == 0)
-					{
-						flag = true;
-						break;
-					}
-				}
-			}
-		}
-		if (flag)
-		{
-			addImageToMap("img/GatheringHand.png", parseInt(itemLookupTable[i][1]), parseInt(itemLookupTable[i][3]));
-			var itemString = "";
-			for (let j = 0; j < gatheringToolMaxRank.length; j++)
-			{
-				var curGatheringString = "";
-				// Base game items
 				for (let k = 0; k < 3; k++)
 				{
+					if (gatheringToolMaxRank[j] <= k) break;
+					// Base game lookup
 					if (itemLookupTable[i][j * 6 + k * 2 + 5])
 					{
-						curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5] + " ";
-						curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5 + 1];
-						curGatheringString += "<br>";
-					}
-				}
-				// DLC items
-				if (parseInt(itemLookupTable[i][4]) != 0)
-				{
-					for (let k = 0; k < 3; k++)
-					{
-						if (itemLookupTable[i][j * 6 + k * 2 + 5 + 36])
+						if (itemLookupTable[i][j * 6 + k * 2 + 5].toLowerCase().localeCompare(term) == 0)
 						{
-							curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5 + 36] + " ";
-							curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5 + 36 + 1] + " (DLC)";
-							curGatheringString += "<br>";
+							flag = true;
+							break;
+						}
+					}
+					// DLC lookup
+					if (parseInt(itemLookupTable[i][4]) != 0 && itemLookupTable[i][j * 6 + k * 2 + 5 + 36])
+					{
+						if (parseInt(itemLookupTable[i][4]) == 1 && !$("#ArtOfAdventureCheckbox")[0].checked) continue;
+						if (parseInt(itemLookupTable[i][4]) == 2 && !$("#AlchemyMysteriesCheckbox")[0].checked) continue;
+						if (itemLookupTable[i][j * 6 + k * 2 + 5 + 36].toLowerCase().localeCompare(term) == 0)
+						{
+							flag = true;
+							break;
 						}
 					}
 				}
-				if (curGatheringString)
+			}
+			if (flag)
+			{
+				numberFound[curMapIndex]++;
+				if (selectedMapIndex == curMapIndex)
 				{
-					itemString += gatheringToolNames[j] + "<br>";
-					itemString += curGatheringString + "<br>";
+					addImageToMap("img/GatheringHand.png", parseInt(itemLookupTable[i][1]), parseInt(itemLookupTable[i][3]));
+					var itemString = "";
+					for (let j = 0; j < gatheringToolMaxRank.length; j++)
+					{
+						var curGatheringString = "";
+						// Base game items
+						for (let k = 0; k < 3; k++)
+						{
+							if (itemLookupTable[i][j * 6 + k * 2 + 5])
+							{
+								curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5] + " ";
+								curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5 + 1];
+								curGatheringString += "<br>";
+							}
+						}
+						// DLC items
+						if (parseInt(itemLookupTable[i][4]) != 0)
+						{
+							for (let k = 0; k < 3; k++)
+							{
+								if (itemLookupTable[i][j * 6 + k * 2 + 5 + 36])
+								{
+									curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5 + 36] + " ";
+									curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5 + 36 + 1] + " (DLC)";
+									curGatheringString += "<br>";
+								}
+							}
+						}
+						if (curGatheringString)
+						{
+							itemString += gatheringToolNames[j] + "<br>";
+							itemString += curGatheringString + "<br>";
+						}
+					}
+					tooltipData.push(itemString.substring(0, itemString.length - 4));
 				}
 			}
-			tooltipData.push(itemString.substring(0, itemString.length - 4));
 		}
-	}
 
-	for (let i = areaStartIndexMonster[selectedMapIndex]; i < areaStartIndexMonster[selectedMapIndex + 1]; i++)
-	{
-		var flag = false;
-		for (let j = 0; !flag && j < 4; j++)
+		for (let i = areaStartIndexMonster[curMapIndex]; i < areaStartIndexMonster[curMapIndex + 1]; i++)
 		{
-			if (!monsterDropLookupTable[i][j + 6]) continue;
-			if (monsterDropLookupTable[i][j + 6].toLowerCase().localeCompare(term) == 0)
+			var flag = false;
+			for (let j = 0; !flag && j < 4; j++)
 			{
-				flag = true;
-				break;
+				if (!monsterDropLookupTable[i][j + 6]) continue;
+				if (monsterDropLookupTable[i][j + 6].toLowerCase().localeCompare(term) == 0)
+				{
+					flag = true;
+					break;
+				}
 			}
-		}
-		var itemString = monsterDropLookupTable[i][4] + "<br><br>";
-		for (let j = 0; j < 4; j++)
-		{
-			if (monsterDropLookupTable[i][j + 6])
+			var itemString = monsterDropLookupTable[i][4] + "<br><br>";
+			for (let j = 0; j < 4; j++)
 			{
-				itemString += monsterDropLookupTable[i][j + 6];
-				itemString += "<br>";
+				if (monsterDropLookupTable[i][j + 6])
+				{
+					itemString += monsterDropLookupTable[i][j + 6];
+					itemString += "<br>";
+				}
 			}
-		}
-		if (flag)
-		{
-			addImageToMap("img/Monster/Monster" + monsterDropLookupTable[i][5] + ".png", parseInt(monsterDropLookupTable[i][1]), parseInt(monsterDropLookupTable[i][3]));
-			tooltipData.push(itemString.substring(0, itemString.length - 4));
+			if (flag)
+			{
+				numberFound[curMapIndex]++;
+				if (selectedMapIndex == curMapIndex)
+				{
+					addImageToMap("img/Monster/Monster" + monsterDropLookupTable[i][5] + ".png", parseInt(monsterDropLookupTable[i][1]), parseInt(monsterDropLookupTable[i][3]));
+					tooltipData.push(itemString.substring(0, itemString.length - 4));
+				}
+			}
 		}
 	}
 	return numberFound;
@@ -546,7 +556,12 @@ function queryItems()
 
 img.onload = function() {
 	var numberFound = queryItems();
-	numberFoundLabel.innerHTML = "Number found: " + numberFound;
+	var numberFoundLabelText = "Number found:<br>";
+	for (let i = 0; i < areaNames.length; i++)
+	{
+		numberFoundLabelText += numberFound[i] + " in " + areaNames[i] + "<br>";
+	}
+	numberFoundLabel.innerHTML = numberFoundLabelText;
 	setup();
 }
 if (img.complete)
