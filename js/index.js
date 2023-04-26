@@ -519,25 +519,25 @@ function queryItems()
 		var flag = false;
 		for (let j = 0; !flag && j < 4; j++)
 		{
-			if (!monsterDropLookupTable[i][j + 5]) continue;
-			if (monsterDropLookupTable[i][j + 5].toLowerCase().localeCompare(term) == 0)
+			if (!monsterDropLookupTable[i][j + 6]) continue;
+			if (monsterDropLookupTable[i][j + 6].toLowerCase().localeCompare(term) == 0)
 			{
 				flag = true;
 				break;
 			}
 		}
-		var itemString = "";
+		var itemString = monsterDropLookupTable[i][4] + "<br><br>";
 		for (let j = 0; j < 4; j++)
 		{
-			if (monsterDropLookupTable[i][j + 5])
+			if (monsterDropLookupTable[i][j + 6])
 			{
-				itemString += monsterDropLookupTable[i][j + 5];
+				itemString += monsterDropLookupTable[i][j + 6];
 				itemString += "<br>";
 			}
 		}
 		if (flag)
 		{
-			addImageToMap("img/Monster/Monster" + monsterDropLookupTable[i][4] + ".png", parseInt(monsterDropLookupTable[i][1]), parseInt(monsterDropLookupTable[i][3]));
+			addImageToMap("img/Monster/Monster" + monsterDropLookupTable[i][5] + ".png", parseInt(monsterDropLookupTable[i][1]), parseInt(monsterDropLookupTable[i][3]));
 			tooltipData.push(itemString.substring(0, itemString.length - 4));
 		}
 	}
