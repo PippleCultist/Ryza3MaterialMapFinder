@@ -60,16 +60,20 @@ for (let i = 0; i < navigator.languages.length; i++) {
     language = "cht";
     break;
   }
-  if (lang.match(/zh/i)) {
+  if (lang.match(/^zh/i)) {
     language = "chs";
     break;
   }
-  if (lang.match(/ja/i)) {
+  if (lang.match(/^ja/i)) {
     language = "jpn";
     break;
   }
-  if (lang.match(/ko/i)) {
+  if (lang.match(/^ko/i)) {
     language = "kor";
+    break;
+  }
+  if (lang.match(/^en/i)) {
+    language = "eng";
     break;
   }
 }
@@ -82,8 +86,6 @@ function trans(text, category) {
     localization[language][category][text]
   ) {
     result = localization[language][category][text];
-  } else {
-    console.log(text);
   }
   let args = Array.prototype.slice.call(arguments, 2);
   for (let i = args.length; i > 0; i--) {
