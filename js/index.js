@@ -12,7 +12,7 @@ const image = document.querySelector('.image');
 const img = document.getElementById('currentMap');
 const button = document.querySelector('button');
 const itemMarker = document.querySelector('.itemMarkers');
-const numberFoundLabel = document.getElementById('numberFoundLabel');
+const numberFoundLabel = document.getElementById('numberFound');
 
 const speed = 0.15;
 let areaStartIndex = [0, -1, -1, -1, -1, -1, -1];
@@ -345,7 +345,7 @@ function queryItems()
 		return 0;
 	}
 	var selectMenu = document.getElementById("maps");
-	var selectedMapName = selectMenu.options[selectMenu.selectedIndex].text;
+	var selectedMapName = selectMenu.options[selectMenu.selectedIndex].value;
 	var selectedMapIndex = -1;
 	switch (selectedMapName)
 	{
@@ -510,7 +510,7 @@ function queryItems()
 						}
 						if (curGatheringString)
 						{
-							itemString += gatheringToolNames[j] + "<br>";
+							itemString += trans(gatheringToolNames[j], "ui") + "<br>";
 							itemString += curGatheringString + "<br>";
 						}
 					}
@@ -556,10 +556,10 @@ function queryItems()
 
 img.onload = function() {
 	var numberFound = queryItems();
-	var numberFoundLabelText = "Number found:<br>";
+	var numberFoundLabelText = "";
 	for (let i = 0; i < areaNames.length; i++)
 	{
-		numberFoundLabelText += numberFound[i] + " in " + areaNames[i] + "<br>";
+		numberFoundLabelText += trans("$1 in $2", "ui", numberFound[i] || 0, trans(areaNames[i], "ui")) + "<br>";
 	}
 	numberFoundLabel.innerHTML = numberFoundLabelText;
 	setup();
@@ -572,7 +572,7 @@ if (img.complete)
 button.onclick = function() {
 	isSetup = false;
 	var selectMenu = document.getElementById("maps");
-	var selectedMap = selectMenu.options[selectMenu.selectedIndex].text;
+	var selectedMap = selectMenu.options[selectMenu.selectedIndex].value;
 	img.src = "img/" + selectedMap + ".jpg";
 }
 

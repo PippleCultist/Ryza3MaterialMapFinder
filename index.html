@@ -318,6 +318,7 @@
 				"Wool Flower",
 				"Yugdore Water"
 			];
+			availableItems = availableItems.map(item => trans(item, "item"));
 			$( "#items" ).autocomplete({
 				source: function(request, response) {
 					var results = $.ui.autocomplete.filter(availableItems, request.term);
@@ -372,7 +373,7 @@
 			</form>
 		</div>
 		<br>
-		<label>Filter Gathering Tool:</label>
+		<label id = "filterLabel">Filter Gathering Tool:</label>
 		<br>
 		<br>
 		<form>
@@ -441,12 +442,19 @@
 			</button>
 		</div>
 		<label id = "numberFoundLabel">Number found: </label>
+		<div id = "numberFound"></div>
 	</div>
 </div>
 <script type="text/javascript">
+	var language;
 	var itemLookupTable;
 	var monsterDropLookupTable;
 </script>
+<script type="text/javascript" src = "js/initLocalization.js"></script>
+<script type="text/javascript" src = "js/initLocalizationJpn.js"></script>
+<script type="text/javascript" src = "js/initLocalizationChs.js"></script>
+<script type="text/javascript" src = "js/initLocalizationCht.js"></script>
+<script type="text/javascript" src = "js/initLocalizationKor.js"></script>
 <script type="text/javascript" src = "js/initData.js"></script>
 <script type="text/javascript" src = "js/initMonsterDrops.js"></script>
 <script type="text/javascript" src = "js/index.js"></script>
