@@ -44,8 +44,8 @@ let isDragging = false;
 let isSetup = false;
 let isOverImage = false;
 let size = { 
-  w: image.offsetWidth, 
-  h: image.offsetHeight 
+	w: image.offsetWidth, 
+	h: image.offsetHeight 
 };
 let pos = { x: 0, y: 0 };
 let target = { x: 0, y: 0 };
