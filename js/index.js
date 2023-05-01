@@ -454,20 +454,20 @@ function queryItems()
 				{
 					if (gatheringToolMaxRank[j] <= k) break;
 					// Base game lookup
-					if (itemLookupTable[i][j * 6 + k * 2 + 5])
+					if (itemLookupTableLocalized[i][j * 6 + k * 2 + 5])
 					{
-						if (itemLookupTable[i][j * 6 + k * 2 + 5].toLowerCase().localeCompare(term) == 0)
+						if (itemLookupTableLocalized[i][j * 6 + k * 2 + 5].toLowerCase().localeCompare(term) == 0)
 						{
 							flag = true;
 							break;
 						}
 					}
 					// DLC lookup
-					if (parseInt(itemLookupTable[i][4]) != 0 && itemLookupTable[i][j * 6 + k * 2 + 5 + 36])
+					if (parseInt(itemLookupTableLocalized[i][4]) != 0 && itemLookupTableLocalized[i][j * 6 + k * 2 + 5 + 36])
 					{
-						if (parseInt(itemLookupTable[i][4]) == 1 && !$("#ArtOfAdventureCheckbox")[0].checked) continue;
-						if (parseInt(itemLookupTable[i][4]) == 2 && !$("#AlchemyMysteriesCheckbox")[0].checked) continue;
-						if (itemLookupTable[i][j * 6 + k * 2 + 5 + 36].toLowerCase().localeCompare(term) == 0)
+						if (parseInt(itemLookupTableLocalized[i][4]) == 1 && !$("#ArtOfAdventureCheckbox")[0].checked) continue;
+						if (parseInt(itemLookupTableLocalized[i][4]) == 2 && !$("#AlchemyMysteriesCheckbox")[0].checked) continue;
+						if (itemLookupTableLocalized[i][j * 6 + k * 2 + 5 + 36].toLowerCase().localeCompare(term) == 0)
 						{
 							flag = true;
 							break;
@@ -480,7 +480,7 @@ function queryItems()
 				numberFound[curMapIndex]++;
 				if (selectedMapIndex == curMapIndex)
 				{
-					addImageToMap("img/GatheringHand.png", parseInt(itemLookupTable[i][1]), parseInt(itemLookupTable[i][3]));
+					addImageToMap("img/GatheringHand.png", parseInt(itemLookupTableLocalized[i][1]), parseInt(itemLookupTableLocalized[i][3]));
 					var itemString = "";
 					for (let j = 0; j < gatheringToolMaxRank.length; j++)
 					{
@@ -488,22 +488,22 @@ function queryItems()
 						// Base game items
 						for (let k = 0; k < 3; k++)
 						{
-							if (itemLookupTable[i][j * 6 + k * 2 + 5])
+							if (itemLookupTableLocalized[i][j * 6 + k * 2 + 5])
 							{
-								curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5] + " ";
-								curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5 + 1];
+								curGatheringString += itemLookupTableLocalized[i][j * 6 + k * 2 + 5] + " ";
+								curGatheringString += itemLookupTableLocalized[i][j * 6 + k * 2 + 5 + 1];
 								curGatheringString += "<br>";
 							}
 						}
 						// DLC items
-						if (parseInt(itemLookupTable[i][4]) != 0)
+						if (parseInt(itemLookupTableLocalized[i][4]) != 0)
 						{
 							for (let k = 0; k < 3; k++)
 							{
-								if (itemLookupTable[i][j * 6 + k * 2 + 5 + 36])
+								if (itemLookupTableLocalized[i][j * 6 + k * 2 + 5 + 36])
 								{
-									curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5 + 36] + " ";
-									curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5 + 36 + 1] + " (DLC)";
+									curGatheringString += itemLookupTableLocalized[i][j * 6 + k * 2 + 5 + 36] + " ";
+									curGatheringString += itemLookupTableLocalized[i][j * 6 + k * 2 + 5 + 36 + 1] + " (DLC)";
 									curGatheringString += "<br>";
 								}
 							}
@@ -524,19 +524,19 @@ function queryItems()
 			var flag = false;
 			for (let j = 0; !flag && j < 4; j++)
 			{
-				if (!monsterDropLookupTable[i][j + 6]) continue;
-				if (monsterDropLookupTable[i][j + 6].toLowerCase().localeCompare(term) == 0)
+				if (!monsterDropLookupTableLocalized[i][j + 6]) continue;
+				if (monsterDropLookupTableLocalized[i][j + 6].toLowerCase().localeCompare(term) == 0)
 				{
 					flag = true;
 					break;
 				}
 			}
-			var itemString = monsterDropLookupTable[i][4] + "<br><br>";
+			var itemString = monsterDropLookupTableLocalized[i][4] + "<br><br>";
 			for (let j = 0; j < 4; j++)
 			{
-				if (monsterDropLookupTable[i][j + 6])
+				if (monsterDropLookupTableLocalized[i][j + 6])
 				{
-					itemString += monsterDropLookupTable[i][j + 6];
+					itemString += monsterDropLookupTableLocalized[i][j + 6];
 					itemString += "<br>";
 				}
 			}
@@ -545,7 +545,7 @@ function queryItems()
 				numberFound[curMapIndex]++;
 				if (selectedMapIndex == curMapIndex)
 				{
-					addImageToMap("img/Monster/Monster" + monsterDropLookupTable[i][5] + ".png", parseInt(monsterDropLookupTable[i][1]), parseInt(monsterDropLookupTable[i][3]));
+					addImageToMap("img/Monster/Monster" + monsterDropLookupTableLocalized[i][5] + ".png", parseInt(monsterDropLookupTableLocalized[i][1]), parseInt(monsterDropLookupTableLocalized[i][3]));
 					tooltipData.push(itemString.substring(0, itemString.length - 4));
 				}
 			}

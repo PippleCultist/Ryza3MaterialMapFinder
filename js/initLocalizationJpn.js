@@ -1,6 +1,7 @@
 localization["jpn"] = {
 	"ui": {
 		"Ryza 3 Material Map Finder": "ライザのアトリエ3 素材マップ",
+		"Choose a language:": "言語:",
 		"Choose a map:": "マップ:",
 		"Kurken": "クーケン島",
 		"Mainland": "クーケン島周辺地域",

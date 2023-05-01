@@ -1,6 +1,7 @@
 localization["chs"] = {
 	"ui": {
 		"Ryza 3 Material Map Finder": "莱莎的炼金工房3 素材分布查询",
+		"Choose a language:": "选择语言：",
 		"Choose a map:": "选择地图：",
 		"Kurken": "库肯岛",
 		"Mainland": "库肯岛周边地区",

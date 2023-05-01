@@ -1,5 +1,6 @@
 const textSelector = {
 	'title': "Ryza 3 Material Map Finder",
+	'label[for="languages"]': "Choose a language:",
 	'label[for="maps"]': "Choose a map:",
 	'#maps option:nth-child(1)': "Kurken",
 	'#maps option:nth-child(2)': "Mainland",
@@ -84,6 +85,9 @@ for (let i = 0; i < navigator.languages.length; i++)
 	}
 }
 
+let languageMenu = document.getElementById('languages');
+languageMenu.querySelector(`option[value="${language}"]`).selected = true;
+
 function trans(text, category)
 {
 	let result = text;
@@ -105,6 +109,7 @@ function trans(text, category)
 
 function updateLocalization()
 {
+	language = languageMenu.options[languageMenu.selectedIndex].value;
 	for (let selector in textSelector)
 	{
 		let element = document.querySelector(selector);
@@ -113,27 +118,39 @@ function updateLocalization()
 			element.textContent = trans(textSelector[selector], "ui");
 		}
 	}
+
+	// Item names
+	itemLookupTableLocalized = [];
 	for (let i = 0; i < itemLookupTable.length; i++)
 	{
+		itemLookupTableLocalized.push(structuredClone(itemLookupTable[i]));
 		for (let j = 5; j < itemLookupTable[i].length; j += 2)
 		{
 			if (itemLookupTable[i][j])
 			{
-				itemLookupTable[i][j] = trans(itemLookupTable[i][j], "item");
+				itemLookupTableLocalized[i][j] = trans(itemLookupTable[i][j], "item");
 			}
 		}
 	}
+
+	// Monster names
+	monsterDropLookupTableLocalized = [];
 	for (let i = 0; i < monsterDropLookupTable.length; i++)
 	{
-		monsterDropLookupTable[i][4] = trans(monsterDropLookupTable[i][4], "monster");
+		monsterDropLookupTableLocalized.push(structuredClone(monsterDropLookupTable[i]));
+		monsterDropLookupTableLocalized[i][4] = trans(monsterDropLookupTable[i][4], "monster");
 		for (let j = 6; j < monsterDropLookupTable[i].length; j ++)
 		{
 			if (monsterDropLookupTable[i][j])
 			{
-				monsterDropLookupTable[i][j] = trans(monsterDropLookupTable[i][j], "item");
+				monsterDropLookupTableLocalized[i][j] = trans(monsterDropLookupTable[i][j], "item");
 			}
 		}
 	}
+
+	// Available item names
+	availableItemsLocalized = availableItems.map(item => trans(item, "item"));
 }
 
 window.addEventListener('load', updateLocalization);
+languageMenu.addEventListener('change', updateLocalization);

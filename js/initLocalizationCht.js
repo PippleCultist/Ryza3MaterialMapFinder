@@ -1,6 +1,7 @@
 localization["cht"] = {
 	"ui": {
 		"Ryza 3 Material Map Finder": "萊莎的鍊金工房3 素材分布查詢",
+		"Choose a language:": "選擇語言：",
 		"Choose a map:": "選擇地圖：",
 		"Kurken": "庫肯島",
 		"Mainland": "庫肯島周邊地區",
