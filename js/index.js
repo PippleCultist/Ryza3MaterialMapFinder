@@ -12,7 +12,7 @@ const image = document.querySelector('.image');
 const img = document.getElementById('currentMap');
 const button = document.querySelector('button');
 const itemMarker = document.querySelector('.itemMarkers');
-const numberFoundLabel = document.getElementById('numberFoundLabel');
+const numberFoundLabel = document.getElementById('numberFound');
 
 const speed = 0.15;
 let areaStartIndex = [0, -1, -1, -1, -1, -1, -1];
@@ -44,8 +44,8 @@ let isDragging = false;
 let isSetup = false;
 let isOverImage = false;
 let size = { 
-  w: image.offsetWidth, 
-  h: image.offsetHeight 
+	w: image.offsetWidth, 
+	h: image.offsetHeight 
 };
 let pos = { x: 0, y: 0 };
 let target = { x: 0, y: 0 };
@@ -345,7 +345,7 @@ function queryItems()
 		return 0;
 	}
 	var selectMenu = document.getElementById("maps");
-	var selectedMapName = selectMenu.options[selectMenu.selectedIndex].text;
+	var selectedMapName = selectMenu.options[selectMenu.selectedIndex].value;
 	var selectedMapIndex = -1;
 	switch (selectedMapName)
 	{
@@ -454,20 +454,20 @@ function queryItems()
 				{
 					if (gatheringToolMaxRank[j] <= k) break;
 					// Base game lookup
-					if (itemLookupTable[i][j * 6 + k * 2 + 5])
+					if (itemLookupTableLocalized[i][j * 6 + k * 2 + 5])
 					{
-						if (itemLookupTable[i][j * 6 + k * 2 + 5].toLowerCase().localeCompare(term) == 0)
+						if (itemLookupTableLocalized[i][j * 6 + k * 2 + 5].toLowerCase().localeCompare(term) == 0)
 						{
 							flag = true;
 							break;
 						}
 					}
 					// DLC lookup
-					if (parseInt(itemLookupTable[i][4]) != 0 && itemLookupTable[i][j * 6 + k * 2 + 5 + 36])
+					if (parseInt(itemLookupTableLocalized[i][4]) != 0 && itemLookupTableLocalized[i][j * 6 + k * 2 + 5 + 36])
 					{
-						if (parseInt(itemLookupTable[i][4]) == 1 && !$("#ArtOfAdventureCheckbox")[0].checked) continue;
-						if (parseInt(itemLookupTable[i][4]) == 2 && !$("#AlchemyMysteriesCheckbox")[0].checked) continue;
-						if (itemLookupTable[i][j * 6 + k * 2 + 5 + 36].toLowerCase().localeCompare(term) == 0)
+						if (parseInt(itemLookupTableLocalized[i][4]) == 1 && !$("#ArtOfAdventureCheckbox")[0].checked) continue;
+						if (parseInt(itemLookupTableLocalized[i][4]) == 2 && !$("#AlchemyMysteriesCheckbox")[0].checked) continue;
+						if (itemLookupTableLocalized[i][j * 6 + k * 2 + 5 + 36].toLowerCase().localeCompare(term) == 0)
 						{
 							flag = true;
 							break;
@@ -480,7 +480,7 @@ function queryItems()
 				numberFound[curMapIndex]++;
 				if (selectedMapIndex == curMapIndex)
 				{
-					addImageToMap("img/GatheringHand.png", parseInt(itemLookupTable[i][1]), parseInt(itemLookupTable[i][3]));
+					addImageToMap("img/GatheringHand.png", parseInt(itemLookupTableLocalized[i][1]), parseInt(itemLookupTableLocalized[i][3]));
 					var itemString = "";
 					for (let j = 0; j < gatheringToolMaxRank.length; j++)
 					{
@@ -488,29 +488,29 @@ function queryItems()
 						// Base game items
 						for (let k = 0; k < 3; k++)
 						{
-							if (itemLookupTable[i][j * 6 + k * 2 + 5])
+							if (itemLookupTableLocalized[i][j * 6 + k * 2 + 5])
 							{
-								curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5] + " ";
-								curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5 + 1];
+								curGatheringString += itemLookupTableLocalized[i][j * 6 + k * 2 + 5] + " ";
+								curGatheringString += itemLookupTableLocalized[i][j * 6 + k * 2 + 5 + 1];
 								curGatheringString += "<br>";
 							}
 						}
 						// DLC items
-						if (parseInt(itemLookupTable[i][4]) != 0)
+						if (parseInt(itemLookupTableLocalized[i][4]) != 0)
 						{
 							for (let k = 0; k < 3; k++)
 							{
-								if (itemLookupTable[i][j * 6 + k * 2 + 5 + 36])
+								if (itemLookupTableLocalized[i][j * 6 + k * 2 + 5 + 36])
 								{
-									curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5 + 36] + " ";
-									curGatheringString += itemLookupTable[i][j * 6 + k * 2 + 5 + 36 + 1] + " (DLC)";
+									curGatheringString += itemLookupTableLocalized[i][j * 6 + k * 2 + 5 + 36] + " ";
+									curGatheringString += itemLookupTableLocalized[i][j * 6 + k * 2 + 5 + 36 + 1] + " (DLC)";
 									curGatheringString += "<br>";
 								}
 							}
 						}
 						if (curGatheringString)
 						{
-							itemString += gatheringToolNames[j] + "<br>";
+							itemString += trans(gatheringToolNames[j], "ui") + "<br>";
 							itemString += curGatheringString + "<br>";
 						}
 					}
@@ -524,19 +524,19 @@ function queryItems()
 			var flag = false;
 			for (let j = 0; !flag && j < 4; j++)
 			{
-				if (!monsterDropLookupTable[i][j + 6]) continue;
-				if (monsterDropLookupTable[i][j + 6].toLowerCase().localeCompare(term) == 0)
+				if (!monsterDropLookupTableLocalized[i][j + 6]) continue;
+				if (monsterDropLookupTableLocalized[i][j + 6].toLowerCase().localeCompare(term) == 0)
 				{
 					flag = true;
 					break;
 				}
 			}
-			var itemString = monsterDropLookupTable[i][4] + "<br><br>";
+			var itemString = monsterDropLookupTableLocalized[i][4] + "<br><br>";
 			for (let j = 0; j < 4; j++)
 			{
-				if (monsterDropLookupTable[i][j + 6])
+				if (monsterDropLookupTableLocalized[i][j + 6])
 				{
-					itemString += monsterDropLookupTable[i][j + 6];
+					itemString += monsterDropLookupTableLocalized[i][j + 6];
 					itemString += "<br>";
 				}
 			}
@@ -545,7 +545,7 @@ function queryItems()
 				numberFound[curMapIndex]++;
 				if (selectedMapIndex == curMapIndex)
 				{
-					addImageToMap("img/Monster/Monster" + monsterDropLookupTable[i][5] + ".png", parseInt(monsterDropLookupTable[i][1]), parseInt(monsterDropLookupTable[i][3]));
+					addImageToMap("img/Monster/Monster" + monsterDropLookupTableLocalized[i][5] + ".png", parseInt(monsterDropLookupTableLocalized[i][1]), parseInt(monsterDropLookupTableLocalized[i][3]));
 					tooltipData.push(itemString.substring(0, itemString.length - 4));
 				}
 			}
@@ -556,10 +556,10 @@ function queryItems()
 
 img.onload = function() {
 	var numberFound = queryItems();
-	var numberFoundLabelText = "Number found:<br>";
+	var numberFoundLabelText = "";
 	for (let i = 0; i < areaNames.length; i++)
 	{
-		numberFoundLabelText += numberFound[i] + " in " + areaNames[i] + "<br>";
+		numberFoundLabelText += trans("$1 in $2", "ui", numberFound[i] || 0, trans(areaNames[i], "ui")) + "<br>";
 	}
 	numberFoundLabel.innerHTML = numberFoundLabelText;
 	setup();
@@ -572,7 +572,7 @@ if (img.complete)
 button.onclick = function() {
 	isSetup = false;
 	var selectMenu = document.getElementById("maps");
-	var selectedMap = selectMenu.options[selectMenu.selectedIndex].text;
+	var selectedMap = selectMenu.options[selectMenu.selectedIndex].value;
 	img.src = "img/" + selectedMap + ".jpg";
 }
 
