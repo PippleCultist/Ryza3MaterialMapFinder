@@ -107,9 +107,40 @@ function trans(text, category)
 	return result;
 }
 
+function transLangToLang(sourceLang, destinationLang, text, category)
+{
+	if (sourceLang.localeCompare(destinationLang) == 0)
+	{
+		return text;
+	}
+
+	if (sourceLang.localeCompare("eng") != 0)
+	{
+		if (localization["eng"][sourceLang][category][text])
+		{
+			text = localization["eng"][sourceLang][category][text];
+		}
+	}
+
+	if (destinationLang.localeCompare("eng") != 0)
+	{
+		if (localization[destinationLang][category][text])
+		{
+			text = localization[destinationLang][category][text];
+		}
+	}
+
+	return text;
+}
+
+let itemSearchBar = document.getElementById('items');
+
 function updateLocalization()
 {
+	var previousItemText = itemSearchBar.value;
+	var previousLanguage = language;
 	language = languageMenu.options[languageMenu.selectedIndex].value;
+	itemSearchBar.value = transLangToLang(previousLanguage, language, previousItemText, "item");
 	for (let selector in textSelector)
 	{
 		let element = document.querySelector(selector);
@@ -119,6 +150,7 @@ function updateLocalization()
 		}
 	}
 
+	// Profiled to take around 120 ms. Might be acceptable for now, but future additions may make this too slow
 	// Item names
 	itemLookupTableLocalized = [];
 	for (let i = 0; i < itemLookupTable.length; i++)
@@ -139,7 +171,7 @@ function updateLocalization()
 	{
 		monsterDropLookupTableLocalized.push(structuredClone(monsterDropLookupTable[i]));
 		monsterDropLookupTableLocalized[i][4] = trans(monsterDropLookupTable[i][4], "monster");
-		for (let j = 6; j < monsterDropLookupTable[i].length; j ++)
+		for (let j = 6; j < monsterDropLookupTable[i].length; j++)
 		{
 			if (monsterDropLookupTable[i][j])
 			{
@@ -150,7 +182,34 @@ function updateLocalization()
 
 	// Available item names
 	availableItemsLocalized = availableItems.map(item => trans(item, "item"));
+
+	var selectMenu = document.getElementById("maps");
+	var selectedMap = selectMenu.options[selectMenu.selectedIndex].value;
+	img.src = "img/" + selectedMap + ".jpg";
 }
 
-window.addEventListener('load', updateLocalization);
+function setupLocalization()
+{
+	// Generate reverse mapping for other languages to English
+	for (var language in localization)
+	{
+		if (language.localeCompare("eng") == 0)
+		{
+			continue;
+		}
+		localization["eng"][language] = {};
+		for (var translationType in localization[language])
+		{
+			localization["eng"][language][translationType] = {};
+			for (var translationKey in localization[language][translationType])
+			{
+				var translationValue = localization[language][translationType][translationKey];
+				localization["eng"][language][translationType][translationValue] = translationKey;
+			}
+		}
+	}
+	updateLocalization();
+}
+
+window.addEventListener('load', setupLocalization);
 languageMenu.addEventListener('change', updateLocalization);
