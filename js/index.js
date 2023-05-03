@@ -7,6 +7,7 @@ const mapNames = Object.freeze({
 	CODE: 5
 });
 
+const site = document.querySelector('.site');
 const container = document.querySelector('.container');
 const image = document.querySelector('.image');
 const img = document.getElementById('currentMap');
@@ -63,7 +64,7 @@ let imgArr = [];
 let imgPos = [];
 let tooltipData = [];
 
-function recalculateAveragePos()
+function calculateAveragePos(event)
 {
 	var averagePos = { x: 0, y: 0 };
 	for (let i = 0; i < event.touches.length; i++)
@@ -73,8 +74,14 @@ function recalculateAveragePos()
 	}
 	averagePos.x /= event.touches.length;
 	averagePos.y /= event.touches.length;
-	prevPointerPosition.x = averagePos.x;
-	prevPointerPosition.y = averagePos.y;
+	averagePos.x += site.scrollLeft;
+	averagePos.y += site.scrollTop;
+	return averagePos;
+}
+
+function updatePrevAveragePos(event)
+{
+	prevPointerPosition = calculateAveragePos(event);
 }
 
 function handleTouchStart(event)
@@ -85,7 +92,7 @@ function handleTouchStart(event)
 		prevPointerDist = Math.hypot(event.touches[0].clientX - event.touches[1].clientX, event.touches[0].clientY - event.touches[1].clientY);
 	}
 	isDragging = true;
-	recalculateAveragePos();
+	updatePrevAveragePos(event);
 }
 
 function handleTouchStartItem(event)
@@ -118,7 +125,7 @@ function handleTouchEnd(event)
 	{
 		isDragging = false;
 	}
-	recalculateAveragePos();
+	updatePrevAveragePos(event);
 }
 
 function handleTouchCancel(event)
@@ -128,7 +135,7 @@ function handleTouchCancel(event)
 	{
 		isDragging = false;
 	}
-	recalculateAveragePos();
+	updatePrevAveragePos(event);
 }
 
 function handleTouchMove(event)
@@ -136,14 +143,7 @@ function handleTouchMove(event)
 	event.preventDefault();
 	if (isDragging)
 	{
-		var averagePos = { x: 0, y: 0 };
-		for (let i = 0; i < event.touches.length; i++)
-		{
-			averagePos.x += event.touches[i].clientX;
-			averagePos.y += event.touches[i].clientY;
-		}
-		averagePos.x /= event.touches.length;
-		averagePos.y /= event.touches.length;
+		var averagePos = calculateAveragePos(event);
 		if (event.touches.length == 2)
 		{
 			var curDist = Math.hypot(event.touches[0].clientX - event.touches[1].clientX, event.touches[0].clientY - event.touches[1].clientY);
@@ -183,8 +183,7 @@ function handleTouchMove(event)
 		{
 			imgArr[i].style.transform = `translate(${imgPos[i].x * imageScaleFactor * scale + pos.x}px,${imgPos[i].y * imageScaleFactor * scale + pos.y}px) scale(${scale * iconScaleFactor},${scale * iconScaleFactor})`;
 		}
-		prevPointerPosition.x = averagePos.x;
-		prevPointerPosition.y = averagePos.y;
+		prevPointerPosition = averagePos;
 	}
 }
 
