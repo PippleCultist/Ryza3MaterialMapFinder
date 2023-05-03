@@ -196,8 +196,8 @@ function handleWheelScroll(event)
 	}
 	event.preventDefault();
 	
-	pointer.x = event.pageX - container.offsetLeft;
-	pointer.y = event.pageY - container.offsetTop;
+	pointer.x = event.layerX - container.offsetLeft;
+	pointer.y = event.layerY - container.offsetTop;
 	target.x = (pointer.x - pos.x) / scale;
 	target.y = (pointer.y - pos.y) / scale;
 	
@@ -240,8 +240,8 @@ function handleMouseLeave(event)
 {
 	isOverImage = false;
 	var borderSize = 1;
-	if (event.pageX < container.offsetLeft + borderSize || event.pageX > container.clientWidth + container.offsetLeft - borderSize ||
-		event.pageY < container.offsetTop + borderSize || event.pageY > container.clientHeight + container.offsetTop - borderSize)
+	if (event.layerX < container.offsetLeft + borderSize || event.layerX > container.clientWidth + container.offsetLeft - borderSize ||
+		event.layerY < container.offsetTop + borderSize || event.layerY > container.clientHeight + container.offsetTop - borderSize)
 	{
 		isDragging = false;
 	}
@@ -279,8 +279,8 @@ function handleMouseDown(event)
 	}
 	event.preventDefault();
 	isDragging = true;
-	prevPointerPosition.x = event.pageX;
-	prevPointerPosition.y = event.pageY;
+	prevPointerPosition.x = event.layerX;
+	prevPointerPosition.y = event.layerY;
 }
 
 function handleMouseUp(event)
@@ -300,8 +300,8 @@ function handleMouseMove(event)
 	}
 	if (isDragging)
 	{
-		pos.x += event.pageX - prevPointerPosition.x;
-		pos.y += event.pageY - prevPointerPosition.y;
+		pos.x += event.layerX - prevPointerPosition.x;
+		pos.y += event.layerY - prevPointerPosition.y;
 		if (pos.x > 0)
 		{
 			pos.x = 0;
@@ -324,8 +324,8 @@ function handleMouseMove(event)
 			imgArr[i].style.transform = `translate(${imgPos[i].x * imageScaleFactor * scale + pos.x}px,${imgPos[i].y * imageScaleFactor * scale + pos.y}px) scale(${scale * iconScaleFactor},${scale * iconScaleFactor})`;
 		}
 	}
-	prevPointerPosition.x = event.pageX;
-	prevPointerPosition.y = event.pageY;
+	prevPointerPosition.x = event.layerX;
+	prevPointerPosition.y = event.layerY;
 }
 
 function queryItems()
