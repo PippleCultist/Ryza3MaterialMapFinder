@@ -4,7 +4,9 @@ const mapNames = Object.freeze({
 	CLERIA: 2,
 	NEMED: 3,
 	ORIM: 4,
-	CODE: 5
+	CODE: 5,
+	ROSCA: 6,
+	ROSCACONTROLTOWER: 7
 });
 
 const site = document.querySelector('.site');
@@ -16,8 +18,8 @@ const itemMarker = document.querySelector('.itemMarkers');
 const numberFoundLabel = document.getElementById('numberFound');
 
 const speed = 0.15;
-let areaStartIndex = [0, -1, -1, -1, -1, -1, -1];
-let areaNames = ["Kurken", "Mainland", "Cleria", "Nemed", "Orim", "Code"];
+let areaStartIndex = [0, -1, -1, -1, -1, -1, -1, -1, -1];
+let areaNames = ["Kurken", "Mainland", "Cleria", "Nemed", "Orim", "Code", "Rosca", "Rosca Control Tower"];
 let currentIndex = 1;
 for (let i = 0; i < itemLookupTable.length; i++)
 {
@@ -29,7 +31,7 @@ for (let i = 0; i < itemLookupTable.length; i++)
 }
 areaStartIndex[currentIndex] = itemLookupTable.length;
 
-let areaStartIndexMonster = [0, -1, -1, -1, -1, -1, -1];
+let areaStartIndexMonster = [0, -1, -1, -1, -1, -1, -1, -1, -1];
 currentIndex = 1;
 for (let i = 0; i < monsterDropLookupTable.length; i++)
 {
@@ -366,11 +368,17 @@ function queryItems()
 		case "Code":
 			selectedMapIndex = mapNames.CODE;
 			break;
+		case "Rosca":
+			selectedMapIndex = mapNames.ROSCA;
+			break;
+		case "RoscaControlTower":
+			selectedMapIndex = mapNames.ROSCACONTROLTOWER;
+			break;
 	}
 	var gatheringToolMaxRank = [parseInt($("#handRankDropdown").val()), parseInt($("#rodRankDropdown").val()), parseInt($("#sickleRankDropdown").val()),
 								parseInt($("#axeRankDropdown").val()), parseInt($("#hammerRankDropdown").val()), parseInt($("#netRankDropdown").val())];
 	var gatheringToolNames = ["Hand Gathering", "Rod Gathering", "Sickle Gathering", "Axe Gathering", "Hammer Gathering", "Net Gathering"];
-	let numberFound = [0, 0, 0, 0, 0, 0];
+	let numberFound = [0, 0, 0, 0, 0, 0, 0, 0];
 	
 	function addImageToMap(imagePath, coordX, coordY)
 	{
@@ -401,6 +409,14 @@ function queryItems()
 			case mapNames.CODE:
 				pixelXShift = -20;
 				pixelYShift = 500;
+				break;
+			case mapNames.ROSCA:
+				pixelXShift = -20;
+				pixelYShift = -20;
+				break;
+			case mapNames.ROSCACONTROLTOWER:
+				pixelXShift = -7850;
+				pixelYShift = 60;
 				break;
 		}
 		let pixelXScale = 1.6;
@@ -521,7 +537,7 @@ function queryItems()
 		for (let i = areaStartIndexMonster[curMapIndex]; i < areaStartIndexMonster[curMapIndex + 1]; i++)
 		{
 			var flag = false;
-			for (let j = 0; !flag && j < 4; j++)
+			for (let j = 0; !flag && j < 6; j++)
 			{
 				if (!monsterDropLookupTableLocalized[i][j + 6]) continue;
 				if (monsterDropLookupTableLocalized[i][j + 6].toLowerCase().localeCompare(term) == 0)
@@ -531,7 +547,7 @@ function queryItems()
 				}
 			}
 			var itemString = monsterDropLookupTableLocalized[i][4] + "<br><br>";
-			for (let j = 0; j < 4; j++)
+			for (let j = 0; j < 6; j++)
 			{
 				if (monsterDropLookupTableLocalized[i][j + 6])
 				{
