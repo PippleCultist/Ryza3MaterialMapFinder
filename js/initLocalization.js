@@ -8,6 +8,8 @@ const textSelector = {
 	'#maps option:nth-child(4)': "Nemed",
 	'#maps option:nth-child(5)': "Orim",
 	'#maps option:nth-child(6)': "Code",
+	'#maps option:nth-child(7)': "Rosca",
+	'#maps option:nth-child(8)': "Rosca Control Tower",
 	'label[for="items"]': "Choose an item:",
 	'#filterLabel': "Filter Gathering Tool:",
 	'label[for="handRankDropdown"]': "Hand Maximum Rank",
