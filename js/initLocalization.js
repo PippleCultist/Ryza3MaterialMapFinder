@@ -10,6 +10,7 @@ const textSelector = {
 	'#maps option:nth-child(6)': "Code",
 	'#maps option:nth-child(7)': "Rosca",
 	'#maps option:nth-child(8)': "Rosca Control Tower",
+	'#maps option:nth-child(9)': "Ashra-am Baird Outskirts",
 	'label[for="items"]': "Choose an item:",
 	'#filterLabel': "Filter Gathering Tool:",
 	'label[for="handRankDropdown"]': "Hand Maximum Rank",
