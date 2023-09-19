@@ -6,17 +6,16 @@
 	display: flex;
 }
 .container {
-	width: 70vw;
+	width: 80vw;
 	height: 80vh;
 	overflow: hidden;
 	outline: 1px solid gray;
 	z-index: 0;
-	flex-grow: 1;
 	cursor: pointer;
 }
 
 .imageBox {
-	width: 70vw;
+	width: 80vw;
 	height: 80vh;
 	overflow: hidden;
 	position: absolute;
@@ -69,6 +68,7 @@ select, input {
 .selection {
 	padding: 20px;
 	z-index: 1;
+	flex-grow: 1;
 }
 
 .mapDropdown {
