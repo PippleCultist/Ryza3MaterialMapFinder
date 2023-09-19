@@ -1,18 +1,18 @@
 .site {
 	width: 100%;
 	height: 100%;
-	position: fixed;
 	padding: 0;
 	margin: 0;
-	overflow: auto;
+	display: flex;
 }
 .container {
 	width: 70vw;
 	height: 80vh;
 	overflow: hidden;
 	outline: 1px solid gray;
-	float: left;
 	z-index: 0;
+	flex-grow: 1;
+	cursor: pointer;
 }
 
 .imageBox {
@@ -62,13 +62,12 @@ img {
 	max-width: 100%;
 }
 
-select {
+select, input {
 	float: right;
 }
 
 .selection {
-	padding-left: 20px;
-	float: left;
+	padding: 20px;
 	z-index: 1;
 }
 
@@ -93,4 +92,26 @@ select {
 
 form {
 	overflow: hidden;
+}
+
+.search-btn {
+	width: 100%;
+	height: 24px;
+}
+
+#numberFound {
+	margin-bottom: 6px;
+}
+
+@media (max-width: 767px) {
+	.site {
+		flex-direction: column;
+	}
+	.container, .imageBox {
+		height: 60vh;
+		width: 100vw;
+	}
+	.search-btn {
+		height: 32px;
+	}
 }
