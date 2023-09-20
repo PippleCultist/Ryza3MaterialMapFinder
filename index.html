@@ -18,7 +18,7 @@
 			<img src = "img/Kurken.jpg" id = "currentMap" />
 		</div>
 	</div>
-	<div class = "selection">
+	<div class = "selection">		
 		<div class = "languageDropdown">
 			<form>
 				<label for = "languages"> Choose a language: </label>
@@ -31,6 +31,13 @@
 				</select>
 			</form>
 		</div>
+		<div class = "itemDropdown">
+			<form>
+				<label for = "items">Choose an item: </label>
+				<input id = "items">
+			</form>
+		</div>
+		<br>
 		<div class = "mapDropdown">
 			<form>
 				<label for = "maps"> Choose a map: </label>
@@ -47,14 +54,16 @@
 				</select>
 			</form>
 		</div>
-		<div class = "itemDropdown">
-			<form>
-				<label for = "items">Choose an item: </label>
-				<input id = "items">
-			</form>
+		<div class = "readyButton">
+			<button class="search-btn" type = "button" onclick="submitSearch()">
+				Search
+			</button>
 		</div>
 		<br>
-		<label id = "filterLabel">Filter Gathering Tool:</label>
+		<label id = "numberFoundLabel">Number found: </label>
+		<div id = "numberFound"></div>
+		<br>
+		<label id = "filterLabel">Filters:</label>
 		<br>
 		<br>
 		<form>
@@ -112,18 +121,17 @@
 			</select>
 		</form>
 		<br>
-		<label for = "AlchemyMysteriesCheckbox">Alchemy Mysteries DLC</label>
-		<input type = "checkbox" id = "AlchemyMysteriesCheckbox" name = "AlchemyMysteriesCheckbox">
+		<label id = "dlcLabel">DLC:</label>
 		<br>
-		<label for = "ArtOfAdventureCheckbox">Art of Adventure DLC</label>
-		<input type = "checkbox" id = "ArtOfAdventureCheckbox" name = "ArtOfAdventureCheckbox">
-		<div class = "readyButton">
-			<button type = "button">
-				Search
-			</button>
-		</div>
-		<label id = "numberFoundLabel">Number found: </label>
-		<div id = "numberFound"></div>
+		<br>
+		<form>
+			<label for = "AlchemyMysteriesCheckbox">Alchemy Mysteries DLC</label>
+			<input type = "checkbox" id = "AlchemyMysteriesCheckbox" name = "AlchemyMysteriesCheckbox">
+		</form>
+		<form>
+			<label for = "ArtOfAdventureCheckbox">Art of Adventure DLC</label>
+			<input type = "checkbox" id = "ArtOfAdventureCheckbox" name = "ArtOfAdventureCheckbox">
+		</form>
 	</div>
 </div>
 <script type="text/javascript">

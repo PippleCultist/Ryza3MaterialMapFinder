@@ -582,7 +582,7 @@ img.onload = function() {
 	var numberFoundLabelText = "";
 	for (let i = 0; i < areaNames.length; i++)
 	{
-		numberFoundLabelText += trans("$1 in $2", "ui", numberFound[i] || 0, trans(areaNames[i], "ui")) + "<br>";
+		numberFoundLabelText += trans("<a href='#' onclick='showMapResults(" + i + ")'>$2</a>: $1", "ui", numberFound[i] || 0, trans(areaNames[i], "ui")) + "<br>";
 	}
 	numberFoundLabel.innerHTML = numberFoundLabelText;
 	setup();
@@ -592,11 +592,17 @@ if (img.complete)
 	setup();
 }
 
-button.onclick = function() {
+function submitSearch() {
 	isSetup = false;
 	var selectMenu = document.getElementById("maps");
 	var selectedMap = selectMenu.options[selectMenu.selectedIndex].value;
 	img.src = "img/" + selectedMap + ".jpg";
+}
+
+function showMapResults(id) {
+	var selectMenu = document.getElementById("maps");
+	selectMenu.selectedIndex = id;
+	submitSearch();
 }
 
 function setup()
